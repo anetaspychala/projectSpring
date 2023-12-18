@@ -1,8 +1,10 @@
 package com.example.pethotelapp.dto;
 
+import com.example.pethotelapp.model.AnimalModel;
 import com.example.pethotelapp.model.RoleModel;
 import lombok.Data;
 
+import java.util.List;
 import java.util.Set;
 
 
@@ -25,7 +27,7 @@ public class UserDto {
 
     /*private Set<RoleModel> roles;*/
 
-  //  private List<AnimalModel> animals;
+  // private List<AnimalModel> animals;  do odblokowania przekazanie id
 
     //private List<Long> reservationsIds;
 }

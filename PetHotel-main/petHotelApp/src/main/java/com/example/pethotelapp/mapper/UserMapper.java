@@ -12,7 +12,7 @@ public class UserMapper {
         userDto.setEmail(userModel.getEmail());
         userDto.setLogin(userModel.getLogin());
         userDto.setPassword(userModel.getPassword());
-        //userDto.setAnimals(userModel.getAnimals());
+
         return userDto;}
 
     public static UserModel toUserModel(UserDto userDto){
@@ -23,6 +23,5 @@ public class UserMapper {
         userModel.setEmail(userDto.getEmail());
         userModel.setLogin(userDto.getLogin());
         userModel.setPassword(userDto.getPassword());
-        //userModel.setAnimals(userDto.getAnimals());
     return userModel;}
 }

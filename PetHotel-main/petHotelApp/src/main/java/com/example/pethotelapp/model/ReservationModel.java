@@ -1,6 +1,5 @@
 package com.example.pethotelapp.model;
 
-import com.example.pethotelapp.enumType.ReservationStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -27,9 +26,8 @@ public class ReservationModel {
     @Column(name = "price")
     private BigDecimal price;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "reservation_status")
-    private ReservationStatus reservationStatus;
+    private String reservationStatus;
 
     @ManyToOne
     @JoinColumn(name = "user_id") // wiele leczen do jednego zwierzecia, JoinColumn, klucz obcy id zwierzecia

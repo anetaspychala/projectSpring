@@ -1,7 +1,5 @@
 package com.example.pethotelapp.dto;
 
-import com.example.pethotelapp.enumType.ReservationStatus;
-
 import com.example.pethotelapp.model.UserModel;
 import lombok.Data;
 
@@ -22,11 +20,12 @@ public class ReservationDto {
 
     private BigDecimal price;
 
-    private ReservationStatus reservationStatus;
+    private String reservationStatus;
 
     private UserModel user;
 
     private Set<Long> roomIds;
 
     private Set<Long> animalIds;
+
 }

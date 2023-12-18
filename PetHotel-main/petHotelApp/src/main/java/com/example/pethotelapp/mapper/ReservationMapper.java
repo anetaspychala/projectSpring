@@ -1,5 +1,7 @@
 package com.example.pethotelapp.mapper;
+import com.example.pethotelapp.dto.AnimalDto;
 import com.example.pethotelapp.dto.ReservationDto;
+import com.example.pethotelapp.dto.RoomDto;
 import com.example.pethotelapp.model.AnimalModel;
 import com.example.pethotelapp.model.ReservationModel;
 import com.example.pethotelapp.model.RoomModel;
@@ -25,7 +27,6 @@ public class ReservationMapper {
         reservationModel.setEndDate(reservationDto.getEndDate());
         reservationModel.setReservationStatus(reservationDto.getReservationStatus());
         reservationModel.setUser(reservationDto.getUser());
-
         return reservationModel;
     }
 }

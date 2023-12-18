@@ -1,8 +1,5 @@
 package com.example.pethotelapp.dto;
 
-import com.example.pethotelapp.enumType.Standard;
-import com.example.pethotelapp.model.ReservationModel;
-import jakarta.persistence.*;
 import lombok.Data;
 
 
@@ -16,11 +13,11 @@ public class RoomDto {
 
     private String name;
 
-    private Standard standard;
+    private String standard;
 
-    private List<Integer> animalSize;
+    private Integer animalSize;
 
-    private Boolean active;
+    private String isActive;
 
-    private Set<Long> reservationIds;
+    //private Set<Long> reservationIds;
 }

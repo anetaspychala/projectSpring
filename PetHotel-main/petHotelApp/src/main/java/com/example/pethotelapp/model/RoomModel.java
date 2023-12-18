@@ -1,7 +1,7 @@
 package com.example.pethotelapp.model;
 
-import com.example.pethotelapp.enumType.Standard;
 import jakarta.persistence.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.Data;
 
 import java.util.List;
@@ -18,16 +18,15 @@ public class RoomModel {
     @Column(name = "name")
     private String name;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "standard")
-    private Standard standard; //enum
 
-    @ElementCollection
-    @CollectionTable(name = "animal_size", joinColumns = @JoinColumn(name = "room_id"))
-    private List<Integer> animalSize;
+    @Column(name = "standard")
+    private String standard;
+
+    @Column(name = "animal_size")
+    private Integer animalSize;
 
     @Column(name = "is_active")
-    private Boolean active;
+    private String active;
 
     @ManyToMany(mappedBy = "rooms")
     private Set<ReservationModel> reservations;

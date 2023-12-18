@@ -1,7 +1,5 @@
 package com.example.pethotelapp.dto;
 
-import com.example.pethotelapp.enumType.Sex;
-import com.example.pethotelapp.model.TreatmentModel;
 import lombok.Data;
 
 import java.util.Set;
@@ -12,8 +10,8 @@ public class AnimalDto {
     private String type;
     private Integer weight;
     private String name;
-    private Sex sex;
-    //private Long ownerId;
+    private String sex;
+   // private Long ownerId; do odblokowania przekazywanie id
     //private Set<TreatmentModel> treatments;
     //private Set<Long> reservationIds;
 }

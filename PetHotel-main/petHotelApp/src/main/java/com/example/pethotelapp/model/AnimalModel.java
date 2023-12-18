@@ -1,6 +1,5 @@
 package com.example.pethotelapp.model;
 
-import com.example.pethotelapp.enumType.Sex;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -24,8 +23,8 @@ public class AnimalModel {
     @Column(name = "name")
     private String name;
 
-    @Enumerated(EnumType.STRING)
-    private Sex sex;
+    @Column(name = "sex")
+    private String sex;
 
     @ManyToOne
     private UserModel user;

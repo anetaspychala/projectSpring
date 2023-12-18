@@ -10,7 +10,7 @@ public class AnimalMapper {
         animalDto.setName(animalModel.getName());
         animalDto.setWeight(animalModel.getWeight());
         animalDto.setSex(animalModel.getSex());
-       //animalDto.setOwnerId(animalDto.getOwnerId());
+      //  animalDto.setOwnerId(animalModel.getUser().getId());
         return animalDto;
     }
 
@@ -20,7 +20,6 @@ public class AnimalMapper {
         animalModel.setName(animalDto.getName());
         animalModel.setWeight(animalDto.getWeight());
         animalModel.setSex(animalDto.getSex());
-       //animalModel.setOwnerId(animalDto.getOwnerId());
         return animalModel;
     }
 }

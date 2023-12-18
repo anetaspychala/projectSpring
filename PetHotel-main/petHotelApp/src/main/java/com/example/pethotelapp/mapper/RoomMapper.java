@@ -10,18 +10,18 @@ public class RoomMapper {
         RoomDto roomDto = new RoomDto();
         roomDto.setId(roomModel.getId());
         roomDto.setName(roomModel.getName());
-        roomDto.setActive(roomModel.getActive());
         roomDto.setStandard(roomModel.getStandard());
         roomDto.setAnimalSize(roomModel.getAnimalSize());
+        roomDto.setIsActive((roomModel.getActive()));
         return roomDto;
     }
     public static RoomModel toRoomModel(RoomDto roomDto){
         RoomModel roomModel = new RoomModel();
         roomModel.setId(roomDto.getId());
         roomModel.setName(roomDto.getName());
-        roomModel.setActive(roomDto.getActive());
         roomModel.setStandard(roomDto.getStandard());
         roomModel.setAnimalSize(roomDto.getAnimalSize());
+        roomModel.setActive(roomDto.getIsActive());
         return roomModel;
     }
 }
