@@ -45,4 +45,13 @@ public class RoomController {
         redirectAttributes.addFlashAttribute("message", "Edycja zakończona pomyślnie");
         return "redirect:/adminpanel/allRooms";
     }
+    @DeleteMapping("/deleteRoom/{id}")
+    public ResponseEntity<String> deleteRoom(@PathVariable Long id) {
+        try {
+            roomService.deleteRoom(id);
+            return ResponseEntity.ok("Room deleted successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting room");
+        }
+    }
 }
