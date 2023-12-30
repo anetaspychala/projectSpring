@@ -35,6 +35,11 @@ public class UserModel {
 
     @ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
     private Set<RoleModel> roles;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL) //relacja 1 do wielu z AnimalModel, wlasciciel relacji

@@ -1,6 +1,7 @@
 package com.example.pethotelapp.controller;
 
 import com.example.pethotelapp.dto.AnimalDto;
+import com.example.pethotelapp.dto.UserDto;
 import com.example.pethotelapp.model.AnimalModel;
 import com.example.pethotelapp.model.UserModel;
 import com.example.pethotelapp.service.AnimalService;
@@ -11,24 +12,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@RequestMapping("/adminpanel")
 public class AnimalController {
     private final AnimalService animalService;
 
-    @PostMapping("/addAnimal")
-    public ResponseEntity<AnimalDto> addAnimal(@RequestBody AnimalDto animalDto) {
-        try {
-            AnimalDto addAnimal = animalService.addAnimal(animalDto);
-            return ResponseEntity.ok(addAnimal);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
 
-    }
     @GetMapping("/animals")
     public List<AnimalModel> getAnimalList(AnimalModel animals){
         List<AnimalModel> animalList = animalService.getAnimalList();
@@ -52,5 +46,15 @@ public class AnimalController {
       //  animals.addAttribute("foundAnimals", foundAnimals);
         return "animalSearchResults";
     }
-
+    @PutMapping("/editAnimal/{id}")
+    public ResponseEntity<?> editAnimal(@PathVariable Long id, @RequestBody AnimalDto updatedAnimalDto) {
+        try {
+            AnimalDto editedAnimal = animalService.editAnimal(id, updatedAnimalDto);
+            return ResponseEntity.ok(editedAnimal);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Animal not found");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error editing animal");
+        }
+    }
 }

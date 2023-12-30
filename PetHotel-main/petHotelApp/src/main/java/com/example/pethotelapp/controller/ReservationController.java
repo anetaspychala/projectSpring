@@ -1,6 +1,7 @@
 package com.example.pethotelapp.controller;
 
 import com.example.pethotelapp.dto.ReservationDto;
+import com.example.pethotelapp.dto.RoomDto;
 import com.example.pethotelapp.model.ReservationModel;
 import com.example.pethotelapp.model.UserModel;
 import com.example.pethotelapp.service.ReservationService;
@@ -11,21 +12,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@RequestMapping("/adminpanel")
 public class ReservationController {
     private final ReservationService reservationService;
-    @PostMapping("/addReservation")
-    public ResponseEntity<ReservationDto> addReservation(@RequestBody ReservationDto reservationDto) {
-        try {
-            ReservationDto addReservation = reservationService.addReservation(reservationDto);
-            return ResponseEntity.ok(addReservation);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
+
     @GetMapping("/reservations")
     public List<ReservationModel> getReservationList(ReservationModel reservation){
         List<ReservationModel> reservationList = reservationService.getReservationList();
@@ -38,6 +34,17 @@ public class ReservationController {
             return ResponseEntity.ok("Reservation deleted successfully");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting reservation");
+        }
+    }
+    @PutMapping("/editReservation/{id}")
+    public ResponseEntity<?> editReservation(@PathVariable Long id, @RequestBody ReservationDto updatedReservationDto) {
+        try {
+            ReservationDto editedReservation = reservationService.editReservation(id, updatedReservationDto);
+            return ResponseEntity.ok(editedReservation);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Reservation not found");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error editing reservation");
         }
     }
 }

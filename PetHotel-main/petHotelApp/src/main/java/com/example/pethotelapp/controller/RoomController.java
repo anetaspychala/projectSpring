@@ -13,24 +13,19 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@RequestMapping("/adminpanel")
 public class RoomController {
 
     private final RoomService roomService;
 
-    @PostMapping("/addRoom")
-    public ResponseEntity<RoomDto> addRoom(@RequestBody RoomDto roomDto) {
-        try {
-            RoomDto addRoom = roomService.addRoom(roomDto);
-            return ResponseEntity.ok(addRoom);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
+
 
     @GetMapping("/rooms")
     public List<RoomModel> getRoomList(RoomModel room){
@@ -38,13 +33,18 @@ public class RoomController {
         return roomList;
     }
 
-
-    @PostMapping("/editRoom/{id}")
-    public String postEditRoom(@ModelAttribute RoomModel editRoom, RedirectAttributes redirectAttributes) {
-        roomService.saveEditRoom(editRoom);
-        redirectAttributes.addFlashAttribute("message", "Edycja zakończona pomyślnie");
-        return "redirect:/adminpanel/allRooms";
+    @PutMapping("/editRoom/{id}")
+    public ResponseEntity<?> editRoom(@PathVariable Long id, @RequestBody RoomDto updatedRoomDto) {
+        try {
+            RoomDto editedRoom = roomService.editRoom(id, updatedRoomDto);
+            return ResponseEntity.ok(editedRoom);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Room not found");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error editing room");
+        }
     }
+
     @DeleteMapping("/deleteRoom/{id}")
     public ResponseEntity<String> deleteRoom(@PathVariable Long id) {
         try {

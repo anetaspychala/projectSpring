@@ -8,6 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,10 +39,26 @@ public class RoomService {
         return roomRepository.findById(id).orElse(null);
     }
 
-    public void saveEditRoom(RoomModel editRoom) {
-        roomRepository.save(editRoom);
-    }
+
 
     public void deleteRoom(Long id) {roomRepository.deleteById(id);
     }
+
+
+    public RoomDto editRoom(Long id, RoomDto updatedRoomDto) {
+        Optional<RoomModel> roomOptional = roomRepository.findById(id);
+
+        if (roomOptional.isPresent()) {
+            RoomModel existingRoom = roomOptional.get();
+            existingRoom.setName(updatedRoomDto.getName());
+            existingRoom.setStandard(updatedRoomDto.getStandard());
+            existingRoom.setAnimalSize(updatedRoomDto.getAnimalSize());
+            existingRoom.setActive(updatedRoomDto.getIsActive());
+            RoomModel updatedRoom = roomRepository.save(existingRoom);
+            return RoomMapper.toRoomDto(updatedRoom);
+        } else {
+            throw new NoSuchElementException("Room with id " + id + " not found");
+        }
+    }
+
 }

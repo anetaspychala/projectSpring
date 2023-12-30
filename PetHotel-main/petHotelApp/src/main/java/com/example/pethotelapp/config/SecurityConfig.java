@@ -1,81 +1,88 @@
-/*
 package com.example.pethotelapp.config;
 
 import com.example.pethotelapp.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
+
+import java.util.Arrays;
+
 
 @Configuration
-@EnableWebSecurity
 @RequiredArgsConstructor
 @Slf4j
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-  private final UserService userService;
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService).passwordEncoder(bCryptPasswordEncoder());
-    }
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.csrf()
-                .disable()
-                .exceptionHandling()
-                .authenticationEntryPoint(new Http403ForbiddenEntryPoint() {
-                })
-                .and()
-                .authenticationProvider(getProvider())
-                .formLogin()
-                .loginProcessingUrl("/login")
-                .successHandler(new AuthentificationLoginSuccessHandler())
-                .failureHandler(new SimpleUrlAuthenticationFailureHandler())
-                .and()
-                .logout()
-                .logoutUrl("/logout")
-                .logoutSuccessHandler(new AuthentificationLogoutSuccessHandler())
-                .invalidateHttpSession(true)
-                .and()
-                .authorizeRequests()
-                .antMatchers("/login").permitAll()
-                .antMatchers("/logout").permitAll()
-                .antMatchers(HttpMethod.GET, "/users/**").authenticated()
-                .antMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.PUT).hasRole("USER")
-                .anyRequest().permitAll()
-                .and()
-                .httpBasic();
-    }
+public class SecurityConfig  {
 
     @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+    public static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+    @Bean
+    MvcRequestMatcher.Builder matcher(HandlerMappingIntrospector handlerMappingIntrospector) {
+        return new MvcRequestMatcher.Builder(handlerMappingIntrospector);
+    }
+    @Bean
+    public InMemoryUserDetailsManager get() {
+        UserDetails user = User.withUsername("test")
+                .password(passwordEncoder().encode("test"))
+                .roles("USER")
+                .build();
+        UserDetails admin = User.withUsername("admin")
+                .password(passwordEncoder().encode("admin"))
+                .roles("ADMIN")
+                .build();
+        return new InMemoryUserDetailsManager(Arrays.asList(user, admin));
+    }
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().requestMatchers(new AntPathRequestMatcher("/**"));
 
-    private class AuthentificationLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
-        @Override
-        public void onAuthenticationSuccess(HttpServletRequest request,
-                                            HttpServletResponse response, Authentication authentication)
-                throws IOException, ServletException {
-            response.setStatus(HttpServletResponse.SC_OK);
-        }
     }
 
-    private class AuthentificationLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler {
-        @Override
-        public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response,
-                                    Authentication authentication) throws IOException, ServletException {
-
-            response.setStatus(HttpServletResponse.SC_OK);
-        }
-    }
 
     @Bean
-    public AuthenticationProvider getProvider() {
-        AuthService provider = new AuthService();
-        provider.setUserDetailsService(userDetailsService);
-        provider.setPasswordEncoder(bCryptPasswordEncoder());
-        return provider;
+    public SecurityFilterChain filterSecurity(HttpSecurity http, MvcRequestMatcher.Builder mvcMatcher) throws Exception {
+        http
+                // .exceptionHandling().accessDeniedPage("/accessDenied")
+                .cors(c->c.disable())
+                .csrf(c->c.disable())
+                .authorizeHttpRequests((authorize) ->
+                        authorize
+                                .requestMatchers("/adminpanel/**").hasRole("ADMIN")
+                                .requestMatchers("/userpanel/**").hasRole("USER")
+                                .requestMatchers("/","/login").permitAll()
+                                .anyRequest().authenticated()
+
+                )
+                // .exceptionHandling().accessDeniedPage("/accessDenied.html").and()
+                .formLogin(
+                        form -> form
+                                .loginPage("/login")
+                                .loginProcessingUrl("/login")
+                                .defaultSuccessUrl("/")
+                                .permitAll()
+                ).logout(
+                        logout -> logout
+                                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                                .permitAll()
+                                .logoutSuccessUrl("/")//po wylogowaniu wracamy na home,
+                        // nie na stronę logowania
+                )
+        ;
+        return http.build();
     }
-}*/
+}
